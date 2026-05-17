@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -15,6 +16,7 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,14 +27,14 @@ export default function RegisterForm() {
       body: JSON.stringify({ name, email, password }),
     });
     if (!res.ok) {
-      const { error } = await res.json().catch(() => ({ error: "Failed" }));
+      const { error } = await res.json().catch(() => ({ error: t("auth.register.failed") }));
       toast.error(error);
       setLoading(false);
       return;
     }
     await signIn("credentials", { email, password, redirect: false });
     setLoading(false);
-    toast.success("Account created");
+    toast.success(t("auth.register.success"));
     router.push("/dashboard");
     router.refresh();
   }
@@ -42,20 +44,22 @@ export default function RegisterForm() {
       <CardContent className="pt-6">
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Name</Label>
+            <Label>{t("common.name")}</Label>
             <Input required value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Email</Label>
+            <Label>{t("common.email")}</Label>
             <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Password</Label>
+            <Label>{t("common.password")}</Label>
             <Input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button disabled={loading} className="w-full">{loading ? "Creating..." : "Create account"}</Button>
+          <Button disabled={loading} className="w-full">
+            {loading ? t("auth.register.loading") : t("auth.register.button")}
+          </Button>
           <p className="text-xs text-ink-muted text-center">
-            Already have one? <Link href="/login" className="text-accent hover:underline">Log in</Link>
+            {t("auth.register.alreadyHave")} <Link href="/login" className="text-accent hover:underline">{t("auth.register.login")}</Link>
           </p>
         </form>
       </CardContent>

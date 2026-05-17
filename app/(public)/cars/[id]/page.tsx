@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
 import AddToCartButton from "@/components/cars/AddToCartButton";
+import { getServerT } from "@/lib/i18n-server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,11 @@ export default async function CarDetailPage({ params }: { params: { id: string }
   const car = await Car.findById(params.id).lean();
   if (!car) notFound();
   const c: any = car;
+  const { t } = getServerT();
+
+  const statusLabel =
+    c.status === "available" ? t("status.available") :
+    c.status === "sold" ? t("status.sold") : t("status.hidden");
 
   return (
     <div className="mx-auto max-w-6xl px-4 pt-28 pb-8 grid lg:grid-cols-3 gap-8">
@@ -59,7 +65,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
               {c.color ? <Badge variant="secondary">{c.color}</Badge> : null}
               {c.country ? <Badge variant="secondary">{c.country}</Badge> : null}
             </div>
-            <p className="text-ink-soft mt-4 whitespace-pre-line">{c.description || "No description."}</p>
+            <p className="text-ink-soft mt-4 whitespace-pre-line">{c.description || t("car.noDescription")}</p>
           </CardContent>
         </Card>
       </div>
@@ -67,11 +73,9 @@ export default async function CarDetailPage({ params }: { params: { id: string }
       <aside className="space-y-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-xs uppercase tracking-wide text-ink-muted">Price</div>
+            <div className="text-xs uppercase tracking-wide text-ink-muted">{t("car.price")}</div>
             <div className="mt-1 text-3xl font-semibold text-ink">{formatPrice(c.price)}</div>
-            <div className="mt-1 text-xs text-ink-muted">
-              {c.status === "available" ? "In stock" : c.status === "sold" ? "Sold" : "Hidden"}
-            </div>
+            <div className="mt-1 text-xs text-ink-muted">{statusLabel}</div>
             <div className="mt-4 border-t border-border pt-4">
               <AddToCartButton
                 car={{

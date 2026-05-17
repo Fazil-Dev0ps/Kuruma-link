@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SectionHeading from "./SectionHeading";
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 type Brand = {
   _id: string;
@@ -12,6 +13,7 @@ type Brand = {
 };
 
 export default function BrandsSection() {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -49,7 +51,7 @@ export default function BrandsSection() {
     <section ref={sectionRef} className="animate-on-scroll bg-cream py-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-end justify-between mb-12">
-          <SectionHeading title="Shop by" highlight="Brand" />
+          <SectionHeading title={t("home.brands.title")} highlight={t("home.brands.highlight")} />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-5">
@@ -78,7 +80,7 @@ export default function BrandsSection() {
                 <h3 className="font-semibold text-ink text-sm group-hover:text-accent transition-colors">
                   {brand.name}
                 </h3>
-                <p className="text-xs text-ink-muted mt-1">{brand.itemCount} cars</p>
+                <p className="text-xs text-ink-muted mt-1">{brand.itemCount} {t("home.brands.carsSuffix")}</p>
               </div>
             </Link>
           ))}

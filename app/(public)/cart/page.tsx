@@ -6,24 +6,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import SafeImage from "@/components/ui/safe-image";
 import { formatPrice } from "@/lib/utils";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function CartPage() {
   const { items, total, remove, setQty } = useCart();
+  const { t } = useLanguage();
 
   return (
     <div className="mx-auto max-w-5xl px-4 pt-28 pb-12">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-ink">Your cart</h1>
-        <p className="text-sm text-ink-muted">Review the cars you've selected.</p>
+        <h1 className="text-2xl font-semibold text-ink">{t("cart.title")}</h1>
+        <p className="text-sm text-ink-muted">{t("cart.subtitle")}</p>
       </div>
 
       {items.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
             <ShoppingCart className="h-10 w-10 mx-auto text-ink-muted mb-3" />
-            <p className="text-ink-muted mb-4">Your cart is empty.</p>
+            <p className="text-ink-muted mb-4">{t("cart.empty")}</p>
             <Button asChild>
-              <Link href="/cars">Browse cars</Link>
+              <Link href="/cars">{t("cart.browseCars")}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -48,7 +50,7 @@ export default function CartPage() {
                     </Link>
                     <div className="text-xs text-ink-muted">{it.brand}</div>
                     <div className="mt-2 flex items-center gap-2">
-                      <label className="text-xs text-ink-muted">Qty</label>
+                      <label className="text-xs text-ink-muted">{t("cart.qty")}</label>
                       <input
                         type="number"
                         min={1}
@@ -65,7 +67,7 @@ export default function CartPage() {
                       className="mt-2 inline-flex items-center gap-1 text-xs text-ink-muted hover:text-destructive transition-colors"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
-                      Remove
+                      {t("cart.remove")}
                     </button>
                   </div>
                 </CardContent>
@@ -76,16 +78,16 @@ export default function CartPage() {
           <Card className="h-fit sticky top-24">
             <CardContent className="pt-6 space-y-3">
               <div className="flex justify-between text-sm text-ink-soft">
-                <span>Items</span>
+                <span>{t("cart.items")}</span>
                 <span>{items.reduce((s, i) => s + i.quantity, 0)}</span>
               </div>
               <div className="flex justify-between text-base font-semibold pt-3 border-t border-border">
-                <span>Total</span>
+                <span>{t("cart.total")}</span>
                 <span>{formatPrice(total)}</span>
               </div>
               <Button asChild className="w-full mt-3">
                 <Link href="/checkout">
-                  Checkout <ArrowRight className="h-4 w-4" />
+                  {t("cart.checkout")} <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </CardContent>

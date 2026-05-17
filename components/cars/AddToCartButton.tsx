@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart/CartProvider";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 type Props = {
   car: {
@@ -17,9 +18,10 @@ type Props = {
 
 export default function AddToCartButton({ car }: Props) {
   const { add } = useCart();
+  const { t } = useLanguage();
 
   if (car.status !== "available") {
-    return <Button disabled className="w-full">Not available</Button>;
+    return <Button disabled className="w-full">{t("cart.notAvailable")}</Button>;
   }
 
   function onAdd() {
@@ -30,12 +32,12 @@ export default function AddToCartButton({ car }: Props) {
       image: car.images?.[0] ?? "",
       price: car.price,
     });
-    toast.success("Added to cart");
+    toast.success(t("toast.addedToCart"));
   }
 
   return (
     <Button onClick={onAdd} className="w-full">
-      <ShoppingCart className="h-4 w-4" /> Add to cart
+      <ShoppingCart className="h-4 w-4" /> {t("cart.add")}
     </Button>
   );
 }

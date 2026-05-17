@@ -8,12 +8,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -21,10 +23,10 @@ export default function LoginForm({ callbackUrl }: { callbackUrl: string }) {
     const res = await signIn("credentials", { email, password, redirect: false, callbackUrl });
     setLoading(false);
     if (res?.error) {
-      toast.error("Invalid email or password");
+      toast.error(t("auth.login.invalid"));
       return;
     }
-    toast.success("Welcome back");
+    toast.success(t("auth.login.welcome"));
     router.push(callbackUrl);
     router.refresh();
   }
@@ -34,16 +36,18 @@ export default function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       <CardContent className="pt-6">
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Email</Label>
+            <Label>{t("common.email")}</Label>
             <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Password</Label>
+            <Label>{t("common.password")}</Label>
             <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button disabled={loading} className="w-full">{loading ? "Logging in..." : "Log in"}</Button>
+          <Button disabled={loading} className="w-full">
+            {loading ? t("auth.login.loading") : t("auth.login.button")}
+          </Button>
           <p className="text-xs text-ink-muted text-center">
-            No account? <Link href="/register" className="text-accent hover:underline">Register</Link>
+            {t("auth.login.noAccount")} <Link href="/register" className="text-accent hover:underline">{t("auth.login.register")}</Link>
           </p>
         </form>
       </CardContent>

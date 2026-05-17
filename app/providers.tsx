@@ -4,15 +4,25 @@ import { SWRConfig } from "swr";
 import { Toaster } from "sonner";
 import { fetcher } from "@/lib/fetcher";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { LanguageProvider } from "@/components/i18n/LanguageProvider";
+import type { Lang } from "@/lib/i18n";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({
+  children,
+  initialLang,
+}: {
+  children: React.ReactNode;
+  initialLang?: Lang;
+}) {
   return (
     <SessionProvider>
       <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
-        <CartProvider>
-          {children}
-          <Toaster richColors position="top-right" />
-        </CartProvider>
+        <LanguageProvider initialLang={initialLang}>
+          <CartProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </CartProvider>
+        </LanguageProvider>
       </SWRConfig>
     </SessionProvider>
   );

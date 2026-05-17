@@ -11,11 +11,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const { items, total, clear } = useCart();
+  const { t } = useLanguage();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
@@ -49,10 +51,10 @@ export default function CheckoutPage() {
     const json = await res.json().catch(() => ({}));
     setLoading(false);
     if (!res.ok) {
-      toast.error(json.error || "Failed to place order");
+      toast.error(json.error || t("toast.failedToPlace"));
       return;
     }
-    toast.success("Order placed!");
+    toast.success(t("toast.orderPlaced"));
     clear();
     router.push(session?.user ? "/dashboard/orders" : "/");
   }
@@ -60,10 +62,10 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 pt-28 pb-12 text-center">
-        <h1 className="text-2xl font-semibold text-ink mb-2">Checkout</h1>
-        <p className="text-ink-muted mb-4">Your cart is empty.</p>
+        <h1 className="text-2xl font-semibold text-ink mb-2">{t("checkout.title")}</h1>
+        <p className="text-ink-muted mb-4">{t("checkout.cartEmpty")}</p>
         <Button asChild>
-          <Link href="/cars">Browse cars</Link>
+          <Link href="/cars">{t("cart.browseCars")}</Link>
         </Button>
       </div>
     );
@@ -72,35 +74,35 @@ export default function CheckoutPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 pt-28 pb-12">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-ink">Checkout</h1>
-        <p className="text-sm text-ink-muted">Provide your contact details to place the order.</p>
+        <h1 className="text-2xl font-semibold text-ink">{t("checkout.title")}</h1>
+        <p className="text-sm text-ink-muted">{t("checkout.subtitle")}</p>
       </div>
 
       <form onSubmit={placeOrder} className="grid lg:grid-cols-[1fr_320px] gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Contact details</CardTitle>
-            <CardDescription>We'll use this to confirm your order.</CardDescription>
+            <CardTitle>{t("checkout.contactDetails")}</CardTitle>
+            <CardDescription>{t("checkout.weWillUse")}</CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label>Full name</Label>
+              <Label>{t("checkout.fullName")}</Label>
               <Input required value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label>Email</Label>
+              <Label>{t("checkout.email")}</Label>
               <Input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label>Phone / contact</Label>
+              <Label>{t("checkout.phone")}</Label>
               <Input required value={contact} onChange={(e) => setContact(e.target.value)} placeholder="+81 ..." />
             </div>
             <div className="space-y-1.5 md:col-span-2">
-              <Label>Address (optional)</Label>
+              <Label>{t("checkout.address")}</Label>
               <Input value={address} onChange={(e) => setAddress(e.target.value)} />
             </div>
             <div className="space-y-1.5 md:col-span-2">
-              <Label>Notes (optional)</Label>
+              <Label>{t("checkout.notes")}</Label>
               <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
             </div>
           </CardContent>
@@ -108,7 +110,7 @@ export default function CheckoutPage() {
 
         <Card className="h-fit">
           <CardHeader>
-            <CardTitle>Order summary</CardTitle>
+            <CardTitle>{t("checkout.orderSummary")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <ul className="space-y-2 text-sm">
@@ -122,11 +124,11 @@ export default function CheckoutPage() {
               ))}
             </ul>
             <div className="flex justify-between text-base font-semibold pt-3 border-t border-border">
-              <span>Total</span>
+              <span>{t("cart.total")}</span>
               <span>{formatPrice(total)}</span>
             </div>
             <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Placing order..." : "Place order"}
+              {loading ? t("checkout.placing") : t("checkout.placeOrder")}
             </Button>
           </CardContent>
         </Card>

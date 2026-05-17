@@ -16,12 +16,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LayoutDashboard, Settings, LogOut, Menu, X, Mail, Headphones, ShoppingCart } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
-
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Cars", href: "/cars" },
-  { label: "Contact", href: "/contact" },
-];
+import { useLanguage } from "@/components/i18n/LanguageProvider";
+import LangSwitcher from "@/components/i18n/LangSwitcher";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -31,6 +27,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count } = useCart();
+  const { t } = useLanguage();
+
+  const navLinks = [
+    { key: "nav.home" as const, href: "/" },
+    { key: "nav.cars" as const, href: "/cars" },
+    { key: "nav.contact" as const, href: "/contact" },
+  ];
 
   useEffect(() => {
     if (!isHome) return;
@@ -63,16 +66,17 @@ export default function Navbar() {
             </span>
             <span className="hidden md:inline-flex items-center gap-1.5">
               <Headphones className="h-3.5 w-3.5" />
-              Customer support
+              {t("nav.customerSupport")}
             </span>
           </div>
           <div className="flex items-center gap-4 text-white/70 text-sm">
             <Link href="/cars" className="hover:text-white transition-colors">
-              Browse Cars
+              {t("nav.browseCars")}
             </Link>
             <Link href="/contact" className="hover:text-white transition-colors">
-              Contact
+              {t("nav.contact")}
             </Link>
+            <LangSwitcher tone="light" />
           </div>
         </div>
       </div>
@@ -95,7 +99,7 @@ export default function Navbar() {
               item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
               <Link
-                key={item.label}
+                key={item.key}
                 href={item.href}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   solid
@@ -107,7 +111,7 @@ export default function Navbar() {
                       : "text-white/80 hover:text-white hover:bg-white/10"
                 }`}
               >
-                {item.label}
+                {t(item.key)}
               </Link>
             );
           })}
@@ -119,7 +123,7 @@ export default function Navbar() {
             className={`relative inline-flex items-center justify-center h-9 w-9 rounded-lg transition-colors ${
               solid ? "hover:bg-surface text-ink" : "hover:bg-white/10 text-white"
             }`}
-            aria-label="Cart"
+            aria-label={t("nav.cart")}
           >
             <ShoppingCart className="h-5 w-5" />
             {count > 0 && (
@@ -145,19 +149,19 @@ export default function Navbar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard">
-                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                    <LayoutDashboard className="h-4 w-4" /> {t("nav.dashboard")}
                   </Link>
                 </DropdownMenuItem>
                 {user.role === "admin" && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin">
-                      <Settings className="h-4 w-4" /> Admin panel
+                      <Settings className="h-4 w-4" /> {t("nav.adminPanel")}
                     </Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => signOut({ callbackUrl: "/" })}>
-                  <LogOut className="h-4 w-4" /> Sign out
+                  <LogOut className="h-4 w-4" /> {t("nav.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -169,10 +173,10 @@ export default function Navbar() {
                 asChild
                 className={solid ? "" : "border-white/30 text-white bg-transparent hover:bg-white/10"}
               >
-                <Link href="/login">Log in</Link>
+                <Link href="/login">{t("nav.login")}</Link>
               </Button>
               <Button size="sm" asChild className="bg-accent hover:bg-accent-hover text-white">
-                <Link href="/register">Sign up</Link>
+                <Link href="/register">{t("nav.signup")}</Link>
               </Button>
             </>
           )}
@@ -195,17 +199,21 @@ export default function Navbar() {
                 item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
               return (
                 <Link
-                  key={item.label}
+                  key={item.key}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     isActive ? "text-accent bg-accent-soft" : "text-ink hover:bg-surface"
                   }`}
                 >
-                  {item.label}
+                  {t(item.key)}
                 </Link>
               );
             })}
+            <div className="pt-2 border-t border-line flex items-center justify-between">
+              <span className="text-xs text-ink-muted">{t("lang.label")}</span>
+              <LangSwitcher />
+            </div>
           </div>
         </div>
       )}
