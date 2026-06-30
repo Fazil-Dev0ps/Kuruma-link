@@ -25,13 +25,13 @@ export async function POST(req: Request) {
 
   if (cloudinaryConfigured()) {
     try {
-      const result = await uploadToCloudinary(file);
+      const { result, method } = await uploadToCloudinary(file);
       return NextResponse.json(
-        { url: result.secure_url, publicId: result.public_id, provider: "cloudinary" },
+        { url: result.secure_url, publicId: result.public_id, provider: `cloudinary:${method}` },
         { status: 201 }
       );
     } catch (err: any) {
-      console.error("Cloudinary upload failed, falling back to base64:", err?.message);
+      console.error("[upload] Cloudinary failed, falling back to inline base64:", err?.message);
     }
   }
 
