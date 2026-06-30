@@ -1,5 +1,5 @@
 export type Lang = "ja" | "en";
-export const DEFAULT_LANG: Lang = "ja";
+export const DEFAULT_LANG: Lang = "en";
 export const LANG_COOKIE = "lang";
 
 export const dictionaries = {
