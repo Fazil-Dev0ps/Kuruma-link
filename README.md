@@ -69,4 +69,4 @@ White (`#fff`) + grey (`#f7f8fa` / `#e5e7eb`) canvas. Single dark accent `#4f46e
 
 ## Bid safety
 
-Bids are placed with a single atomic `findOneAndUpdate` guarded on `status`, `endTime`, and `currentPrice` — races cannot undercut the leader. Expired auctions are auto-closed on read and by a cron sweep..
+Bids are placed with a single atomic `findOneAndUpdate` guarded on `status`, `endTime`, and `currentPrice` — races cannot undercut the leader. Expired auctions are auto-closed on read and by a cron sweep...
